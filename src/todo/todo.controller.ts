@@ -15,13 +15,17 @@ import {
   HttpStatus,
   //UseFilters,
   ParseIntPipe,
-  UsePipes,
+  //UsePipes,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
-import { CreateTodoDto, CreateTodoSchema } from './dto/create-todo.dto';
+import {
+  CreateTodoDto,
+  //  CreateTodoSchema
+} from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { QueryTodoDto } from './dto/query-todo.dto';
-import { JoiValidationPipe } from 'src/pipes/joi-validation/joi-validation.pipe';
+import { DtoValidationWithClassValidatorPipe } from 'src/pipes/dto-validation_with_class-validator/dto-validation_with_class-validator.pipe';
+//import { JoiValidationPipe } from 'src/pipes/joi-validation/joi-validation.pipe';
 //import { HttpExceptionFilter } from 'src/http-exception/http-exception.filter';
 
 //@UseFilters(new HttpExceptionFilter())
@@ -30,9 +34,12 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Post()
-  @UsePipes(new JoiValidationPipe(CreateTodoSchema))
+  //@UsePipes(new JoiValidationPipe(CreateTodoSchema))
   @Header('Cache-Control', 'no-cache')
-  create(@Body() createTodoDto: CreateTodoDto) {
+  create(
+    @Body(new DtoValidationWithClassValidatorPipe())
+    createTodoDto: CreateTodoDto,
+  ) {
     return this.todoService.create(createTodoDto);
   }
 
