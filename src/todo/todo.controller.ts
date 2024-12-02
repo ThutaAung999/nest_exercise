@@ -15,6 +15,8 @@ import {
   HttpStatus,
   //UseFilters,
   ParseIntPipe,
+  UseGuards,
+  UseInterceptors,
   //UsePipes,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
@@ -25,11 +27,16 @@ import {
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { QueryTodoDto } from './dto/query-todo.dto';
 import { DtoValidationWithClassValidatorPipe } from 'src/pipes/dto-validation_with_class-validator/dto-validation_with_class-validator.pipe';
+//import { AuthGuard } from 'src/auth/auth.guard';
+import { TodoDecorator } from './todo.decorator';
+//import { LoggingInterceptor } from 'src/logging/logging.interceptor';
 //import { JoiValidationPipe } from 'src/pipes/joi-validation/joi-validation.pipe';
 //import { HttpExceptionFilter } from 'src/http-exception/http-exception.filter';
 
 //@UseFilters(new HttpExceptionFilter())
 @Controller('todo')
+//@UseGuards(AuthGuard)
+//@UseInterceptors(LoggingInterceptor)
 export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
@@ -47,7 +54,11 @@ export class TodoController {
   findAll() {
     return this.todoService.findAll();
   }
-
+  @Get('/ab*cd')
+  wildcard(@TodoDecorator() header: any) {
+    console.log(' Todo Request Header Authorization: ', header.authorization);
+    return 'wildcard';
+  }
   @Get('/query')
   query(
     @Query() queryTodoDto: QueryTodoDto,
@@ -107,6 +118,7 @@ export class TodoController {
   ) {
     return this.todoService.findOne(+id);
   }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTodoDto: UpdateTodoDto) {
     return this.todoService.update(+id, updateTodoDto);

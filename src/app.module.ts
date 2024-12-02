@@ -11,8 +11,9 @@ import { TodoModule } from './todo/todo.module';
 import { HostController } from './host/host.controller';
 import { LibSpecificController } from './lib-specific/lib-specific.controller';
 import { logger } from './logger/logger.middleware';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { HttpExceptionFilter } from './http-exception/http-exception.filter';
+import { LoggingInterceptor } from './logging/logging.interceptor';
 //import { TodoController } from './todo/todo.controller';
 //import { LoggerMiddleware } from './logger/logger.middleware';
 
@@ -23,6 +24,7 @@ import { HttpExceptionFilter } from './http-exception/http-exception.filter';
     AppService,
     //{ provide: APP_FILTER, useClass: HttpExceptionFilter },
     { provide: APP_PIPE, useClass: ValidationPipe },
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
   ],
 })
 export class AppModule implements NestModule {
